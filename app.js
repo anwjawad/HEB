@@ -1,10 +1,11 @@
-// app.js — Orchestrator & bootstrapper
+// app.js — Orchestrator & bootstrapper (with Learned Highlighter)
 // ------------------------------------------------------------
 // Responsibilities:
 // - Boot the app, wire core services, and mount features.
 // - Maintain global state (user profile, progress, settings).
 // - Register routes to swap panels.
 // - Coordinate lazy-loading of feature modules to keep bundles small.
+// - NEW: Highlight all learned items across the app (class: .learned)
 
 import { initThemeSwitcher, applySavedTheme } from './core/theme.js';
 import { Router } from './core/router.js';
@@ -15,10 +16,13 @@ import { formatPercent } from './core/utils.js';
 import { LETTERS } from './data/letters.js';
 import { NIKUD } from './data/nikud.js';
 
+// -------- Learned Highlight Config --------
+const LEARNED_THRESHOLD = 0.6; // ≥60% يعتبر "متعلَّم"
+
 // Global app state kept minimal & serializable
 export const AppState = {
   started: false,
-  progress: { masteredLetters: {}, xp: 0 },
+  progress: { masteredLetters: {}, xp: 0 }, // { 'א': {seen,correct,score}, ... }
   goals: [
     'تعلّم 5 حروف جديدة',
     'إنهاء تمرين تتبّع واحد',
@@ -74,21 +78,25 @@ export const on = (name, fn) => bus.addEventListener(name, fn);
   });
   router.register('progress');
   router.register('flashcards', async () => {
-    // Lazy-load feature
     const mod = await import('./features/flashcards.js');
     mod.mount({ container: els.lettersGrid, state: AppState, onProgress });
+    // بعد تركيب الميزة، فعّل تمييز المتعلَّم
+    queueHighlight();
   });
   router.register('trace', async () => {
     const mod = await import('./features/trace.js');
     mod.mount({ hostId: 'trace-host', state: AppState, onProgress });
+    queueHighlight();
   });
   router.register('syllables', async () => {
     const mod = await import('./features/syllables.js');
     mod.mount({ hostId: 'syllables-lab', letters: LETTERS, nikud: NIKUD, onProgress });
+    queueHighlight();
   });
   router.register('reading', async () => {
     const mod = await import('./features/reading.js');
     mod.mount({ hostId: 'reading-host', letters: LETTERS, nikud: NIKUD, onProgress });
+    queueHighlight();
   });
   router.start();
 
@@ -103,7 +111,7 @@ export const on = (name, fn) => bus.addEventListener(name, fn);
   els.btnReview.addEventListener('click', ()=> {
     // Simple review flow: go to flashcards with filtered set of weak letters
     const weak = Object.entries(AppState.progress.masteredLetters)
-      .filter(([k,v]) => v.score < 0.6)
+      .filter(([k,v]) => v.score < LEARNED_THRESHOLD)
       .map(([k]) => k);
     window.sessionStorage.setItem('review-set', JSON.stringify(weak));
     location.hash = '#/flashcards';
@@ -120,6 +128,8 @@ function swapPanels(target){
   Object.entries(els.panels).forEach(([name, el])=>{
     el.hidden = name !== target;
   });
+  // بعد التبديل، فعّل التمييز في اللوحة الظاهرة
+  queueHighlight();
 }
 
 function updateProgressUI(){
@@ -157,6 +167,8 @@ function onProgress(delta){
   save('app-state', AppState);
   updateProgressUI();
   hydrateProgressLists();
+  // كل تحديث تقدّم → فعّل التمييز فورًا
+  queueHighlight();
 }
 
 function handleLetterProgress({ letter, stats }){
@@ -165,6 +177,7 @@ function handleLetterProgress({ letter, stats }){
   if(stats.score >= 0.8 && stats.seen >= 5) maybeAddBadge(`أتقنت الحرف ${letter}`);
   save('app-state', AppState);
   hydrateProgressLists();
+  queueHighlight();
 }
 
 function maybeAddBadge(name){
@@ -172,4 +185,41 @@ function maybeAddBadge(name){
     AppState.badges.push(name);
     emit('badge:new', { name });
   }
+}
+
+// -----------------------------
+// Learned Highlighter
+// -----------------------------
+function getLearnedSet(){
+  const out = new Set();
+  for(const [letter, s] of Object.entries(AppState.progress.masteredLetters)){
+    if((s?.score || 0) >= LEARNED_THRESHOLD) out.add(letter);
+  }
+  return out;
+}
+
+function applyLearnedHighlight(){
+  const learned = getLearnedSet();
+  // 1) بطاقات الحروف (features/flashcards): article[data-letter]
+  document.querySelectorAll('[data-letter]').forEach(el=>{
+    const L = el.getAttribute('data-letter');
+    el.classList.toggle('learned', learned.has(L));
+  });
+  // 2) تمارين المقاطع (features/syllables): article[data-base]
+  document.querySelectorAll('[data-base]').forEach(el=>{
+    const base = el.getAttribute('data-base');
+    el.classList.toggle('learned', learned.has(base));
+  });
+  // 3) يمكن التوسعة لاحقًا: القراءة/التتبّع…
+}
+
+let _highlightScheduled = false;
+function queueHighlight(){
+  if(_highlightScheduled) return;
+  _highlightScheduled = true;
+  // استخدم rAF لضمان اكتمال DOM بعد أي تركيب ميزات
+  requestAnimationFrame(()=>{
+    _highlightScheduled = false;
+    try{ applyLearnedHighlight(); }catch(err){ /* noop */ }
+  });
 }
