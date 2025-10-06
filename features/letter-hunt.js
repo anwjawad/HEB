@@ -1,17 +1,36 @@
-// features/letter-hunt.js — Letter Hunt 10x10 (Safari-safe)
+// features/letter-hunt.js — Letter Hunt 10x10 (Safari-safe, fixed)
 // لعبة اختيار الحروف: شبكة 10×10، سؤال: اختر الحرف/الحروف المطلوبة.
-// متوافق مع Safari قديم (لا يستخدم optional chaining ?. )
+// لا يستخدم optional chaining ولا أي ميزات حداثية قديمة على iPad.
 
 import { LETTERS } from '../data/letters.js';
 import { speak, uid } from '../core/utils.js';
 
-var GRID = 10; // 10x10
-var TARGET_MIN = 1;
-var TARGET_MAX = 3;
+// --- Polyfills لازمة لسفاري قديم ---
+(function(){
+  if (!Element.prototype.matches) {
+    Element.prototype.matches =
+      Element.prototype.msMatchesSelector ||
+      Element.prototype.webkitMatchesSelector;
+  }
+  if (!Element.prototype.closest) {
+    Element.prototype.closest = function(sel){
+      var el = this;
+      while (el && el.nodeType === 1) {
+        if (el.matches(sel)) return el;
+        el = el.parentElement || el.parentNode;
+      }
+      return null;
+    };
+  }
+})();
+
+var GRID = 10;           // 10x10
+var TARGET_MIN = 1;      // أقل عدد أهداف
+var TARGET_MAX = 3;      // أعلى عدد أهداف
 
 var _host, _state, _onProgress;
-var currentTargets = []; // array of letters (char)
-var locked = false;      // يمنع التغيير بعد التحقق حتى بدء جولة جديدة
+var currentTargets = []; // أحرف السؤال
+var locked = false;      // قفل بعد التحقق
 
 export function mount(opts){
   _host = document.getElementById(opts.hostId);
@@ -42,10 +61,11 @@ function buildUI(){
         '<button class="btn-primary btn" id="lh-check">تحقّق</button>' +
       '</div>' +
     '</div>' +
-    '<div id="lh-grid" class="grid gap-1" style="grid-template-columns:repeat(' + GRID + ',minmax(28px,1fr));margin-top:10px"></div>' +
+    '<div id="lh-grid" class="grid gap-1" ' +
+      'style="grid-template-columns:repeat(' + GRID + ',minmax(28px,1fr));margin-top:10px"></div>' +
     '<div class="muted" id="lh-result" style="margin-top:8px">—</div>';
 
-  _host.parentNode.replaceChild(wrap, _host);
+  if(_host.parentNode){ _host.parentNode.replaceChild(wrap, _host); }
   _host = wrap;
 
   _host.querySelector('#lh-new').addEventListener('click', newRound);
@@ -53,23 +73,23 @@ function buildUI(){
   _host.querySelector('#lh-say').addEventListener('click', speakTarget);
 }
 
-function randomInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
+function randInt(a,b){ return a + Math.floor(Math.random()*(b-a+1)); }
 function pick(arr,n){
-  var a=arr.slice();
-  for(var i=a.length-1;i>0;i--){
-    var j=Math.floor(Math.random()*(i+1));
-    var tmp=a[i]; a[i]=a[j]; a[j]=tmp;
+  var a = arr.slice();
+  for (var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t = a[i]; a[i]=a[j]; a[j]=t;
   }
   return a.slice(0,n);
 }
 
 function newRound(){
   locked = false;
-  // اختر 1-3 أحرف أهداف عشوائيًا
-  var k = randomInt(TARGET_MIN, TARGET_MAX);
+  // 1–3 أحرف أهداف عشوائية
+  var k = randInt(TARGET_MIN, TARGET_MAX);
   currentTargets = pick(LETTERS.map(function(x){ return x.letter; }), k);
 
-  // حدّد كثافة تكرار الأهداف داخل الشبكة
+  // كثافة تكرار الأهداف داخل الشبكة
   var dEl = _host.querySelector('#lh-density');
   var density = (dEl && dEl.value) || 'med';
 
@@ -80,16 +100,15 @@ function newRound(){
 }
 
 function makeBoard(targets, density){
-  // أنشئ مصفوفة GRID*GRID بأحرف عشوائية مع ضمان إدراج الأهداف بعدّة خلايا
   var pool = LETTERS.map(function(x){ return x.letter; });
   var total = GRID*GRID;
   var board = new Array(total);
-  for(var i=0;i<total;i++){
+  for (var i=0;i<total;i++){
     board[i] = pool[Math.floor(Math.random()*pool.length)];
   }
-  // ضمان الوجود
-  var repeats = density==='low'? 6 : density==='high'? 22 : 12; // تقريبي لكل جولة
-  for(var r=0; r<repeats; r++){
+  // حقن الأهداف بعدة خلايا
+  var repeats = density==='low'? 6 : density==='high'? 22 : 12;
+  for (var r=0;r<repeats;r++){
     var idx = Math.floor(Math.random()*total);
     board[idx] = targets[Math.floor(Math.random()*targets.length)];
   }
@@ -106,8 +125,8 @@ function renderQuestion(){
 
 function speakTarget(){
   var txt = currentTargets.map(function(ch){
-    var found = LETTERS.find(function(l){ return l.letter===ch; });
-    return (found && found.heb) ? found.heb : ch;
+    var L = LETTERS.find(function(l){ return l.letter===ch; });
+    return (L && L.heb) ? L.heb : ch;
   }).join(' ו ');
   speak(txt);
 }
@@ -115,21 +134,20 @@ function speakTarget(){
 function renderBoard(board){
   var grid = _host.querySelector('#lh-grid');
   var html = '';
-  for(var i=0;i<board.length;i++){
-    html += cellHTML(board[i], i);
+  for (var i=0;i<board.length;i++){
+    var ch = board[i];
+    var id = uid('c');
+    html += '<button class="btn" data-cell="'+i+'" data-ch="'+ch+'" id="'+id+'" ' +
+            'style="padding:.45rem 0;font-size:18px">'+ ch +'</button>';
   }
   grid.innerHTML = html;
   grid.addEventListener('click', onCellClick);
 }
 
-function cellHTML(ch, idx){
-  var id = uid('c');
-  return '<button class="btn" data-cell="'+idx+'" data-ch="'+ch+'" id="'+id+'" style="padding:.45rem 0;font-size:18px">'+ch+'</button>';
-}
-
 function onCellClick(e){
+  if(locked) return;
   var btn = e.target.closest('[data-cell]');
-  if(!btn || locked) return;
+  if(!btn) return;
   btn.classList.toggle('btn-primary');
 }
 
@@ -145,12 +163,9 @@ function checkAnswers(){
     return currentTargets.indexOf(b.getAttribute('data-ch')) !== -1 ? i : -1;
   }).filter(function(i){ return i>=0; });
 
-  var pickedSet = {};
-  for(var i=0;i<pickedIdx.length;i++) pickedSet[pickedIdx[i]] = true;
-  var correctSet = {};
-  for(i=0;i<correctIdx.length;i++) correctSet[correctIdx[i]] = true;
+  var pickedSet = {}; for (var i=0;i<pickedIdx.length;i++) pickedSet[pickedIdx[i]] = true;
+  var correctSet = {}; for (i=0;i<correctIdx.length;i++) correctSet[correctIdx[i]] = true;
 
-  // التلوين البصري
   var hits=0, misses=0, over=0;
   buttons.forEach(function(b,i){
     var isTarget = !!correctSet[i];
@@ -166,12 +181,10 @@ function checkAnswers(){
   var pct = Math.round(score*100);
   setResult('نتيجتك: '+pct+'% — صحيح: '+hits+'/'+need+' ، فوائت: '+misses+' ، اختيارات زائدة: '+over);
 
-  // XP وفق الدقة (بدون optional chaining)
   if (typeof _onProgress === 'function') {
     _onProgress({ xp: Math.max(2, Math.floor(score*12)), letter: '*', correct: score>=0.6 });
   }
 
-  // مكافأة كاملة
   if(score===1){
     try{
       var ev = new CustomEvent('badge:new', { detail: { name: 'جولة اصطياد مثالية' } });
