@@ -112,6 +112,21 @@ body{background:var(--bg);color:var(--text);accent-color:var(--primary);}
 .table thead th{background:var(--table-header);color:var(--text);padding:10px;text-align:start}
 .table tbody td{padding:10px;border-top:1px solid var(--border)}
 .table tr:nth-child(even) td{background:var(--table-row-alt)}
+/* إبراز العناصر المتقَنة */
+.learned{
+  outline:2px solid #60a5fa;
+  box-shadow:0 0 0 3px rgba(96,165,250,.25) inset, var(--shadow-1);
+  position:relative;
+}
+.learned::after{
+  content:'✔ متقَن';
+  position:absolute;
+  inset-inline-end:8px; inset-block-start:8px;
+  font-size:.8rem; font-weight:700;
+  color:#0b1220;
+  background:linear-gradient(135deg,#93c5fd,#60a5fa);
+  border-radius:999px; padding:.15rem .5rem;
+}
 
 /* ======= Responsive ======= */
 @media (max-width:720px){
