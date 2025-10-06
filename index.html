@@ -8,109 +8,49 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
+
   <style>
     /* ================== Extra themes (to exceed 10) ================== */
-    :root[data-theme="solar"]{
-      --bg:#0d0f1a; --surface:#101425; --panel:#121730; --card:#121730;
-      --text:#fdfcf8; --text-muted:#cfd6dd; --text-dim:#bac2cc;
-      --primary:#ffd166; --primary-600:#f4bf45; --primary-700:#e0a92d;
-      --accent:#06d6a0; --accent-700:#05b88a;
-      --error:#ef476f; --success:#06d6a0; --warning:#ffd166;
-      --border:rgba(255,255,255,.16); --border-strong:rgba(255,255,255,.26);
-      --input-bg:rgba(255,255,255,.06); --input-focus:#ffd166;
-      --pill-bg:rgba(255,255,255,.08); --pill-text:#fdfcf8;
-      --shadow-1:0 8px 28px rgba(0,0,0,.25); --shadow-2:0 12px 40px rgba(0,0,0,.35);
-      --radius-sm:8px; --radius:12px; --radius-lg:18px;
-      --table-header:rgba(255,255,255,.06); --table-row:rgba(255,255,255,.03); --table-row-alt:rgba(255,255,255,.06);
-    }
-    :root[data-theme="violet"]{
-      --bg:#120b18; --surface:#1a0f26; --panel:#1f1230; --card:#1f1230;
-      --text:#f7ecff; --text-muted:#d3b6f0; --text-dim:#c7a5e8;
-      --primary:#9b5cff; --primary-600:#8848f2; --primary-700:#7537e0;
-      --accent:#ff7ad9; --accent-700:#f062c4;
-      --error:#ff4d8d; --success:#35d6a1; --warning:#ffb86b;
-      --border:rgba(255,255,255,.18); --border-strong:rgba(255,255,255,.28);
-      --input-bg:rgba(255,255,255,.08); --input-focus:#9b5cff;
-      --pill-bg:rgba(255,255,255,.1); --pill-text:#f7ecff;
-      --shadow-1:0 8px 30px rgba(0,0,0,.28); --shadow-2:0 12px 40px rgba(0,0,0,.38);
-      --radius-sm:8px; --radius:12px; --radius-lg:18px;
-      --table-header:rgba(255,255,255,.07); --table-row:rgba(255,255,255,.04); --table-row-alt:rgba(255,255,255,.07);
-    }
-    :root[data-theme="forest"]{
-      --bg:#0a140e; --surface:#0e1c14; --panel:#112418; --card:#142a1c;
-      --text:#eaf4ee; --text-muted:#c1d8cb; --text-dim:#a9c8b8;
-      --primary:#4caf50; --primary-600:#409a45; --primary-700:#35853a;
-      --accent:#8bc34a; --accent-700:#77b33e;
-      --error:#ef5350; --success:#4caf50; --warning:#ffc107;
-      --border:rgba(255,255,255,.14); --border-strong:rgba(255,255,255,.24);
-      --input-bg:rgba(255,255,255,.06); --input-focus:#4caf50;
-      --pill-bg:rgba(255,255,255,.08); --pill-text:#eaf4ee;
-      --shadow-1:0 8px 30px rgba(0,0,0,.25); --shadow-2:0 12px 40px rgba(0,0,0,.35);
-      --radius-sm:8px; --radius:12px; --radius-lg:18px;
-      --table-header:rgba(255,255,255,.05); --table-row:rgba(255,255,255,.03); --table-row-alt:rgba(255,255,255,.06);
-    }
-    :root[data-theme="sand"]{
-      --bg:#14110e; --surface:#1b1713; --panel:#231e18; --card:#231e18;
-      --text:#fff7ee; --text-muted:#e8d8c6; --text-dim:#d9c6b1;
-      --primary:#f2a65a; --primary-600:#e18f3c; --primary-700:#cf7a28;
-      --accent:#7dcfb6; --accent-700:#66bda3;
-      --error:#f25f5c; --success:#7ccf9a; --warning:#ffcd6b;
-      --border:rgba(255,255,255,.16); --border-strong:rgba(255,255,255,.26);
-      --input-bg:rgba(255,255,255,.06); --input-focus:#f2a65a;
-      --pill-bg:rgba(255,255,255,.08); --pill-text:#fff7ee;
-      --shadow-1:0 8px 30px rgba(0,0,0,.25); --shadow-2:0 12px 40px rgba(0,0,0,.35);
-      --radius-sm:8px; --radius:12px; --radius-lg:18px;
-      --table-header:rgba(255,255,255,.06); --table-row:rgba(255,255,255,.03); --table-row-alt:rgba(255,255,255,.06);
-    }
-    :root[data-theme="mono"]{
-      --bg:#0a0a0a; --surface:#111; --panel:#151515; --card:#151515;
-      --text:#f5f5f5; --text-muted:#cfcfcf; --text-dim:#b9b9b9;
-      --primary:#8e8e8e; --primary-600:#7a7a7a; --primary-700:#696969;
-      --accent:#d1d1d1; --accent-700:#bdbdbd;
-      --error:#e57373; --success:#81c784; --warning:#ffb74d;
-      --border:rgba(255,255,255,.2); --border-strong:rgba(255,255,255,.3);
-      --input-bg:rgba(255,255,255,.06); --input-focus:#8e8e8e;
-      --pill-bg:rgba(255,255,255,.12); --pill-text:#f5f5f5;
-      --shadow-1:0 8px 30px rgba(0,0,0,.35); --shadow-2:0 12px 40px rgba(0,0,0,.45);
-      --radius-sm:8px; --radius:12px; --radius-lg:18px;
-      --table-header:rgba(255,255,255,.08); --table-row:rgba(255,255,255,.05); --table-row-alt:rgba(255,255,255,.08);
-    }
-    :root[data-theme="pastel"]{
-      --bg:#121318; --surface:#191b22; --panel:#1e2028; --card:#1e2028;
-      --text:#fefbff; --text-muted:#e4dbf0; --text-dim:#d2c8e0;
-      --primary:#b6a2ff; --primary-600:#a691ff; --primary-700:#947eff;
-      --accent:#93e1d8; --accent-700:#7fd2c9;
-      --error:#ff8fab; --success:#a2f3c2; --warning:#ffd6a5;
-      --border:rgba(255,255,255,.18); --border-strong:rgba(255,255,255,.28);
-      --input-bg:rgba(255,255,255,.08); --input-focus:#b6a2ff;
-      --pill-bg:rgba(255,255,255,.1); --pill-text:#fefbff;
-      --shadow-1:0 8px 30px rgba(0,0,0,.28); --shadow-2:0 12px 40px rgba(0,0,0,.38);
-      --radius-sm:8px; --radius:12px; --radius-lg:18px;
-      --table-header:rgba(255,255,255,.08); --table-row:rgba(255,255,255,.05); --table-row-alt:rgba(255,255,255,.08);
-    }
-    /* Arabic font */
-    body{font-family: 'Cairo', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, 'Noto Sans', sans-serif;}
-    .hero{padding:28px 0}
-    .hero h1{margin:0 0 6px;font-size:28px;line-height:1.2}
-    .hero p{margin:0;color:var(--text-muted)}
-    .toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .toolbar .btn{height:40px}
-    header .brand{display:flex;align-items:center;gap:10px}
-    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));box-shadow:var(--shadow-1);display:grid;place-items:center;font-weight:800;color:#0F2A21}
-    .pill.hilite{background:linear-gradient(135deg, color-mix(in oklab, var(--primary) 35%, transparent), color-mix(in oklab, var(--accent) 30%, transparent));border-color:transparent}
+    :root[data-theme="solar"]{--bg:#0d0f1a;--surface:#101425;--panel:#121730;--card:#121730;
+      --text:#fdfcf8;--text-muted:#cfd6dd;--text-dim:#bac2cc;
+      --primary:#ffd166;--primary-600:#f4bf45;--primary-700:#e0a92d;
+      --accent:#06d6a0;--accent-700:#05b88a;
+      --error:#ef476f;--success:#06d6a0;--warning:#ffd166;
+      --border:rgba(255,255,255,.16);--border-strong:rgba(255,255,255,.26);
+      --input-bg:rgba(255,255,255,.06);--input-focus:#ffd166;
+      --pill-bg:rgba(255,255,255,.08);--pill-text:#fdfcf8;
+      --shadow-1:0 8px 28px rgba(0,0,0,.25);--shadow-2:0 12px 40px rgba(0,0,0,.35);
+      --radius-sm:8px;--radius:12px;--radius-lg:18px;}
+    :root[data-theme="violet"]{--bg:#120b18;--surface:#1a0f26;--panel:#1f1230;--card:#1f1230;
+      --text:#f7ecff;--text-muted:#d3b6f0;--text-dim:#c7a5e8;
+      --primary:#9b5cff;--accent:#ff7ad9;--error:#ff4d8d;}
+    :root[data-theme="forest"]{--bg:#0a140e;--surface:#0e1c14;--panel:#112418;--card:#142a1c;
+      --text:#eaf4ee;--primary:#4caf50;--accent:#8bc34a;}
+    :root[data-theme="sand"]{--bg:#14110e;--surface:#1b1713;--panel:#231e18;--card:#231e18;
+      --text:#fff7ee;--primary:#f2a65a;--accent:#7dcfb6;}
+    :root[data-theme="mono"]{--bg:#0a0a0a;--surface:#111;--panel:#151515;--card:#151515;
+      --text:#f5f5f5;--primary:#8e8e8e;--accent:#d1d1d1;}
+    :root[data-theme="pastel"]{--bg:#121318;--surface:#191b22;--panel:#1e2028;--card:#1e2028;
+      --text:#fefbff;--primary:#b6a2ff;--accent:#93e1d8;}
+    body{font-family:'Cairo',ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,'Noto Sans',sans-serif;}
+    .hero{padding:28px 0}.hero h1{margin:0 0 6px;font-size:28px;line-height:1.2}
+    .hero p{margin:0;color:var(--text-muted)}.toolbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .toolbar .btn{height:40px}header .brand{display:flex;align-items:center;gap:10px}
+    .logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,var(--primary),var(--accent));
+      box-shadow:var(--shadow-1);display:grid;place-items:center;font-weight:800;color:#0F2A21}
+    .pill.hilite{background:linear-gradient(135deg,color-mix(in oklab,var(--primary)35%,transparent),
+      color-mix(in oklab,var(--accent)30%,transparent));border-color:transparent}
     .kanban{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    @media (max-width:900px){.kanban{grid-template-columns:1fr}}
-    .kanban .col h4{margin:0 0 8px}
-    .empty{display:grid;place-items:center;padding:24px;color:var(--text-dim)}
+    @media(max-width:900px){.kanban{grid-template-columns:1fr}}.empty{display:grid;place-items:center;padding:24px;color:var(--text-dim)}
   </style>
 </head>
+
 <body>
   <!-- Floating Theme Switcher -->
   <div id="theme-switcher" aria-label="Theme switcher">
-    <button class="toggle" id="theme-toggle" title="تبديل الأنماط">🎨 الأنماط</button>
+    <button class="toggle" id="theme-toggle" data-icon="theme" title="تبديل الأنماط">الأنماط</button>
     <div id="theme-panel" class="card">
       <div class="row" id="theme-chips">
-        <!-- chips injected by JS if not present -->
         <button class="theme-chip" data-theme="fern">Fern</button>
         <button class="theme-chip" data-theme="neon">Neon</button>
         <button class="theme-chip" data-theme="ocean">Ocean</button>
@@ -137,11 +77,12 @@
           <div class="muted">تعليم تفاعلي بالحروف، المقاطع، والكلمات</div>
         </div>
       </div>
+
       <div class="toolbar">
         <span class="pill hilite" id="progress-pill">التقدّم: 0%</span>
-        <button class="btn" id="btn-review" title="مراجعة الذكي">🔁 مراجعة</button>
-        <button class="btn" id="btn-reset" title="تصفير التقدّم">♻️ تصفير</button>
-        <button class="btn-primary btn" id="btn-start">ابدأ الآن</button>
+        <button class="btn" id="btn-review" data-icon="repeat" title="مراجعة الذكي">مراجعة</button>
+        <button class="btn" id="btn-reset" data-icon="reset" title="تصفير التقدّم">تصفير</button>
+        <button class="btn-primary btn" id="btn-start" data-icon="start">ابدأ الآن</button>
       </div>
     </header>
 
@@ -150,35 +91,27 @@
       <p>واجهات واضحة + صوتيات دقيقة + تمارين كتابة وتشكيل (נִקּוּד) مع تصحيح فوري.</p>
     </section>
 
-    <!-- Panels: the app swaps visibility based on route/state -->
     <main class="grid gap-2">
-      <!-- 1) Alphabet / Flashcards -->
       <section id="panel-flashcards" class="card" aria-label="تعليم الحروف" hidden>
         <div class="section-title"><h3>الحروف الأساسية</h3></div>
-        <div class="grid gap-2" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))" id="letters-grid">
-          <!-- cards rendered by features/flashcards.js -->
-        </div>
+        <div class="grid gap-2" style="grid-template-columns:repeat(auto-fill,minmax(160px,1fr))" id="letters-grid"></div>
       </section>
 
-      <!-- 2) Tracing / Writing -->
       <section id="panel-trace" class="card" aria-label="الكتابة والتتبع" hidden>
         <div class="section-title"><h3>تتبّع الحرف ✍️</h3></div>
         <div id="trace-host" class="empty">اختر حرفًا من الحروف لبدء التتبع.</div>
       </section>
 
-      <!-- 3) Syllables (Nikud) -->
       <section id="panel-syllables" class="card" aria-label="المقاطع الصوتية" hidden>
-        <div class="section-title"><h3>المقاطع والحركات (נِקּוּד)</h3></div>
+        <div class="section-title"><h3>المقاطع والحركات (נִקּוּד)</h3></div>
         <div id="syllables-lab" class="empty">اضغط على حركة لسماع الفرق، ثم كوّن مقطعك.</div>
       </section>
 
-      <!-- 4) Guided Reading -->
       <section id="panel-reading" class="card" aria-label="القراءة الموجّهة" hidden>
         <div class="section-title"><h3>القراءة الموجّهة</h3></div>
         <div id="reading-host" class="empty">ابدأ بكلمات بسيطة ثم جُمَل قصيرة مع تصحيح فوري.</div>
       </section>
 
-      <!-- 5) Progress & Achievements (Kanban-style) -->
       <section id="panel-progress" class="card" aria-label="التقدّم والإنجازات">
         <div class="section-title"><h3>لوحة الإنجازات</h3></div>
         <div class="kanban">
@@ -201,5 +134,6 @@
 
   <!-- App scripts -->
   <script type="module" src="app.js"></script>
+  <script type="module" src="boot.js"></script>
 </body>
 </html>
