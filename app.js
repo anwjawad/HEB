@@ -76,6 +76,10 @@ export const on = (name, fn) => bus.addEventListener(name, fn);
     default: 'progress',
     onChange: (route)=> swapPanels(route)
   });
+  router.register('hunt', async () => {
+  const mod = await import('./features/letter-hunt.js');
+  mod.mount({ hostId: 'hunt-host', state: AppState, onProgress });
+});
   router.register('progress');
   router.register('flashcards', async () => {
     const mod = await import('./features/flashcards.js');
