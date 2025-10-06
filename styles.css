@@ -3,7 +3,8 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;height:100%}
 :root{--radius-sm:8px;--radius:12px;--radius-lg:18px;--shadow-1:0 8px 26px rgba(0,0,0,.22);--shadow-2:0 12px 40px rgba(0,0,0,.32)}
-
+.nav-tabs .btn { background: var(--surface); }
+.nav-tabs .btn:hover { transform: translateY(-1px); }
 /* ======= Core Layout ======= */
 body{background:var(--bg);color:var(--text);accent-color:var(--primary);}
 .container{max-width:1100px;margin:0 auto;padding:18px}
