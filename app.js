@@ -39,6 +39,7 @@ const els = {
     syllables: document.getElementById('panel-syllables'),
     reading: document.getElementById('panel-reading'),
     progress: document.getElementById('panel-progress'),
+    hunt: document.getElementById('panel-hunt'),
   },
   progressPill: document.getElementById('progress-pill'),
   btnStart: document.getElementById('btn-start'),
